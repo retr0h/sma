@@ -1,0 +1,20 @@
+syntax = 'proto3';
+
+package sma;
+
+option go_package="src/go/sma";
+
+service Posts {
+  // Show Post
+  //
+  // Show a specific post
+  rpc ShowPost(PostIdReq) returns (Post);
+}
+
+// PostIdReq
+//
+// The request message to show a post
+message PostIdReq {
+  // The id for the post
+  string post_id = 1;
+}

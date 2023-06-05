@@ -1,0 +1,447 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "posts.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/posts": {
+      "post": {
+        "summary": "Create Post",
+        "description": "Create a new post",
+        "operationId": "Posts_CreatePost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/smaPost"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/smaCreatePostReq"
+            }
+          }
+        ],
+        "tags": [
+          "Posts"
+        ]
+      }
+    },
+    "/v1/posts/{post_id}": {
+      "get": {
+        "summary": "Show Post",
+        "description": "Show a specific post",
+        "operationId": "Posts_ShowPost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/smaPost"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "post_id",
+            "description": "The id for the post",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Posts"
+        ]
+      },
+      "delete": {
+        "summary": "DeletePost",
+        "description": "Deletes a specific post",
+        "operationId": "Posts_DeletePost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/smaEmptyResp"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "post_id",
+            "description": "The id for the post",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Posts"
+        ]
+      },
+      "patch": {
+        "summary": "Update Post",
+        "description": "Updates a specific post",
+        "operationId": "Posts_UpdatePost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/smaPost"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "post_id",
+            "description": "The id for the post",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": "The updatable fields that are allowed to be updated",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/smaUpdatePost"
+            }
+          },
+          {
+            "name": "update_mask.paths",
+            "description": "The set of field mask paths.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "Posts"
+        ]
+      }
+    },
+    "/v1/users/{user_id}/posts": {
+      "get": {
+        "summary": "ListPosts",
+        "description": "Returns a collection of posts for a given user",
+        "operationId": "Posts_ListPosts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/smaListPostsResp"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "description": "The id for the user",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "s",
+            "description": "Search query string.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "description": "Requested page.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "per_page",
+            "description": "Requested number of items per page\nDefault: 20\nMax: 50.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filter",
+            "description": "Filtered collection by status.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "FILTER_UNESPECIFIED",
+              "FILTER_DRAFT",
+              "FILTER_SCHEDULED",
+              "FILTER_ARCHIVED",
+              "FILTER_ACTIVE"
+            ],
+            "default": "FILTER_UNESPECIFIED"
+          }
+        ],
+        "tags": [
+          "Posts"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "protobufFieldMask": {
+      "type": "object",
+      "properties": {
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The set of field mask paths."
+        }
+      },
+      "description": "paths: \"f.a\"\n    paths: \"f.b.d\"\n\nHere `f` represents a field in some root message, `a` and `b`\nfields in the message found in `f`, and `d` a field found in the\nmessage in `f.b`.\n\nField masks are used to specify a subset of fields that should be\nreturned by a get operation or modified by an update operation.\nField masks also have a custom JSON encoding (see below).\n\n# Field Masks in Projections\n\nWhen used in the context of a projection, a response message or\nsub-message is filtered by the API to only contain those fields as\nspecified in the mask. For example, if the mask in the previous\nexample is applied to a response message as follows:\n\n    f {\n      a : 22\n      b {\n        d : 1\n        x : 2\n      }\n      y : 13\n    }\n    z: 8\n\nThe result will not contain specific values for fields x,y and z\n(their value will be set to the default, and omitted in proto text\noutput):\n\n\n    f {\n      a : 22\n      b {\n        d : 1\n      }\n    }\n\nA repeated field is not allowed except at the last position of a\npaths string.\n\nIf a FieldMask object is not present in a get operation, the\noperation applies to all fields (as if a FieldMask of all fields\nhad been specified).\n\nNote that a field mask does not necessarily apply to the\ntop-level response message. In case of a REST get operation, the\nfield mask applies directly to the response, but in case of a REST\nlist operation, the mask instead applies to each individual message\nin the returned resource list. In case of a REST custom method,\nother definitions may be used. Where the mask applies will be\nclearly documented together with its declaration in the API.  In\nany case, the effect on the returned resource/resources is required\nbehavior for APIs.\n\n# Field Masks in Update Operations\n\nA field mask in update operations specifies which fields of the\ntargeted resource are going to be updated. The API is required\nto only change the values of the fields as specified in the mask\nand leave the others untouched. If a resource is passed in to\ndescribe the updated values, the API ignores the values of all\nfields not covered by the mask.\n\nIf a repeated field is specified for an update operation, new values will\nbe appended to the existing repeated field in the target resource. Note that\na repeated field is only allowed in the last position of a `paths` string.\n\nIf a sub-message is specified in the last position of the field mask for an\nupdate operation, then new value will be merged into the existing sub-message\nin the target resource.\n\nFor example, given the target message:\n\n    f {\n      b {\n        d: 1\n        x: 2\n      }\n      c: [1]\n    }\n\nAnd an update message:\n\n    f {\n      b {\n        d: 10\n      }\n      c: [2]\n    }\n\nthen if the field mask is:\n\n paths: [\"f.b\", \"f.c\"]\n\nthen the result will be:\n\n    f {\n      b {\n        d: 10\n        x: 2\n      }\n      c: [1, 2]\n    }\n\nAn implementation may provide options to override this default behavior for\nrepeated and message fields.\n\nIn order to reset a field's value to the default, the field must\nbe in the mask and set to the default value in the provided resource.\nHence, in order to reset all fields of a resource, provide a default\ninstance of the resource and set all fields in the mask, or do\nnot provide a mask as described below.\n\nIf a field mask is not present on update, the operation applies to\nall fields (as if a field mask of all fields has been specified).\nNote that in the presence of schema evolution, this may mean that\nfields the client does not know and has therefore not filled into\nthe request will be reset to their default. If this is unwanted\nbehavior, a specific service may require a client to always specify\na field mask, producing an error if not.\n\nAs with get operations, the location of the resource which\ndescribes the updated values in the request message depends on the\noperation kind. In any case, the effect of the field mask is\nrequired to be honored by the API.\n\n## Considerations for HTTP REST\n\nThe HTTP kind of an update operation which uses a field mask must\nbe set to PATCH instead of PUT in order to satisfy HTTP semantics\n(PUT must only be used for full updates).\n\n# JSON Encoding of Field Masks\n\nIn JSON, a field mask is encoded as a single string where paths are\nseparated by a comma. Fields name in each path are converted\nto/from lower-camel naming conventions.\n\nAs an example, consider the following message declarations:\n\n    message Profile {\n      User user = 1;\n      Photo photo = 2;\n    }\n    message User {\n      string display_name = 1;\n      string address = 2;\n    }\n\nIn proto a field mask for `Profile` may look as such:\n\n    mask {\n      paths: \"user.display_name\"\n      paths: \"photo\"\n    }\n\nIn JSON, the same mask is represented as below:\n\n    {\n      mask: \"user.displayName,photo\"\n    }\n\n# Field Masks and Oneof Fields\n\nField masks treat fields in oneofs just as regular fields. Consider the\nfollowing message:\n\n    message SampleMessage {\n      oneof test_oneof {\n        string name = 4;\n        SubMessage sub_message = 9;\n      }\n    }\n\nThe field mask can be:\n\n    mask {\n      paths: \"name\"\n    }\n\nOr:\n\n    mask {\n      paths: \"sub_message\"\n    }\n\nNote that oneof type names (\"test_oneof\" in this case) cannot be used in\npaths.\n\n## Field Mask Verification\n\nThe implementation of any API method which has a FieldMask type field in the\nrequest should verify the included field paths, and return an\n`INVALID_ARGUMENT` error if any path is unmappable.",
+      "title": "`FieldMask` represents a set of symbolic field paths, for example:"
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "smaCreatePostReq": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "The title for the Post"
+        },
+        "description": {
+          "type": "string",
+          "title": "The description for the Post"
+        },
+        "user_id": {
+          "type": "string",
+          "title": "The id of the user who created the Post"
+        },
+        "media_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "The collection of the Posts's media files"
+        },
+        "scheduled_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "The schedule date for the post"
+        }
+      },
+      "description": "The request message to create a post",
+      "title": "CreatePostReq"
+    },
+    "smaEmptyResp": {
+      "type": "object",
+      "description": "An empty response",
+      "title": "EmptyResp"
+    },
+    "smaFilters": {
+      "type": "string",
+      "enum": [
+        "FILTER_UNESPECIFIED",
+        "FILTER_DRAFT",
+        "FILTER_SCHEDULED",
+        "FILTER_ARCHIVED",
+        "FILTER_ACTIVE"
+      ],
+      "default": "FILTER_UNESPECIFIED"
+    },
+    "smaListPostsResp": {
+      "type": "object",
+      "properties": {
+        "posts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/smaPost"
+          },
+          "title": "The collection of posts"
+        },
+        "page_info": {
+          "$ref": "#/definitions/smaPageInfo",
+          "title": "Page info"
+        }
+      },
+      "description": "The response message to list the collection of posts for a given user",
+      "title": "ListPostsResp"
+    },
+    "smaPageInfo": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "string",
+          "format": "uint64",
+          "title": "The current page"
+        },
+        "page_size": {
+          "type": "string",
+          "format": "uint64",
+          "title": "The page size"
+        },
+        "total_items": {
+          "type": "string",
+          "format": "uint64",
+          "title": "The total items"
+        },
+        "total_pages": {
+          "type": "string",
+          "format": "uint64",
+          "title": "The total pages"
+        }
+      }
+    },
+    "smaPost": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "The id for the Post"
+        },
+        "title": {
+          "type": "string",
+          "title": "The title for the Post"
+        },
+        "description": {
+          "type": "string",
+          "title": "The description for the Post"
+        },
+        "user_id": {
+          "type": "string",
+          "title": "The is of the user who created the Post"
+        },
+        "status": {
+          "$ref": "#/definitions/smaPostStatus",
+          "title": "The current status of the Post"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "The date when the Post was created"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "The date when the Post was updated"
+        }
+      },
+      "description": "The message that represents a post",
+      "title": "Post"
+    },
+    "smaPostStatus": {
+      "type": "string",
+      "enum": [
+        "POST_STATUS_UNSPECIFIED",
+        "POST_STATUS_DRAFT",
+        "POST_STATUS_SCHEDULED",
+        "POST_STATUS_ARCHIVED",
+        "POST_STATUS_ACTIVE"
+      ],
+      "default": "POST_STATUS_UNSPECIFIED"
+    },
+    "smaUpdatePost": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "The title for the post"
+        },
+        "description": {
+          "type": "string",
+          "title": "The description for the post"
+        },
+        "media_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "The collection of the Posts's media files"
+        },
+        "scheduled_at": {
+          "type": "string",
+          "format": "date-time",
+          "title": "The schedule date for the post"
+        }
+      },
+      "description": "The message that keeps track of the permitted attributes\nto be updated for a post",
+      "title": "UpdatePost"
+    }
+  }
+}

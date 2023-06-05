@@ -1,0 +1,18 @@
+syntax = 'proto3';
+
+package sma;
+
+option go_package="src/go/sma";
+
+service Posts {
+  // DeletePost
+  //
+  // Deletes a specific post
+  rpc DeletePost(PostIdReq) returns (EmptyResp);
+}
+
+// EmptyResp
+//
+// An empty response
+message EmptyResp {
+}

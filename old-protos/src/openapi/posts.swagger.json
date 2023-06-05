@@ -1,0 +1,184 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "posts.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Posts"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "smaEmptyResp": {
+      "type": "object",
+      "description": "An empty response",
+      "title": "EmptyResp"
+    },
+    "smaFilters": {
+      "type": "string",
+      "enum": [
+        "FILTER_UNESPECIFIED",
+        "FILTER_DRAFT",
+        "FILTER_SCHEDULED",
+        "FILTER_ARCHIVED",
+        "FILTER_ACTIVE"
+      ],
+      "default": "FILTER_UNESPECIFIED"
+    },
+    "smaListPostsResp": {
+      "type": "object",
+      "properties": {
+        "posts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/smaPost"
+          },
+          "title": "The collection of posts"
+        },
+        "pageInfo": {
+          "$ref": "#/definitions/smaPageInfo",
+          "title": "Page info"
+        }
+      },
+      "description": "The response message to list the collection of posts for a given user",
+      "title": "ListPostsResp"
+    },
+    "smaPageInfo": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "string",
+          "format": "uint64",
+          "title": "The current page"
+        },
+        "pageSize": {
+          "type": "string",
+          "format": "uint64",
+          "title": "The page size"
+        },
+        "totalItems": {
+          "type": "string",
+          "format": "uint64",
+          "title": "The total items"
+        },
+        "totalPages": {
+          "type": "string",
+          "format": "uint64",
+          "title": "The total pages"
+        }
+      }
+    },
+    "smaPost": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "The id for the Post"
+        },
+        "title": {
+          "type": "string",
+          "title": "The title for the Post"
+        },
+        "description": {
+          "type": "string",
+          "title": "The description for the Post"
+        },
+        "userId": {
+          "type": "string",
+          "title": "The is of the user who created the Post"
+        },
+        "status": {
+          "$ref": "#/definitions/smaPostStatus",
+          "title": "The current status of the Post"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "The date when the Post was created"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "The date when the Post was updated"
+        }
+      },
+      "description": "The message that represents a post",
+      "title": "Post"
+    },
+    "smaPostStatus": {
+      "type": "string",
+      "enum": [
+        "POST_STATUS_UNSPECIFIED",
+        "POST_STATUS_DRAFT",
+        "POST_STATUS_SCHEDULED",
+        "POST_STATUS_ARCHIVED",
+        "POST_STATUS_ACTIVE"
+      ],
+      "default": "POST_STATUS_UNSPECIFIED"
+    },
+    "smaUpdatePost": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "The title for the post"
+        },
+        "description": {
+          "type": "string",
+          "title": "The description for the post"
+        },
+        "mediaIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "The collection of the Posts's media files"
+        },
+        "scheduledAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "The schedule date for the post"
+        }
+      },
+      "description": "The message that keeps track of the permitted attributes\nto be updated for a post",
+      "title": "UpdatePost"
+    }
+  }
+}

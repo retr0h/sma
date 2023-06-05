@@ -1,0 +1,59 @@
+syntax = 'proto3';
+
+package sma;
+
+option go_package="src/go/sma";
+
+service Posts {
+  // ListPosts
+  //
+  // Returns a collection of posts for a given user
+  rpc ListPosts(ListPostsReq) returns (ListPostsResp);
+}
+
+// ListPostsReq
+//
+// The request message to list the collection of posts for a given user
+message ListPostsReq {
+  // The id for the user
+  string user_id = 1;
+  // Search query string
+  string s = 2;
+  // Requested page
+  string page = 3;
+  // Requested number of items per page
+  // Default: 20
+  // Max: 50
+  string per_page = 4;
+  // Filtered collection by status
+  Filters filter = 5;
+}
+
+// ListPostsResp
+//
+// The response message to list the collection of posts for a given user
+message ListPostsResp {
+  // The collection of posts
+  repeated Post posts = 1;
+  // Page info
+  PageInfo page_info = 2;
+}
+
+message PageInfo {
+  // The current page
+  uint64 page = 1;
+  // The page size
+  uint64 page_size = 2;
+  // The total items
+  uint64 total_items = 3;
+  // The total pages
+  uint64 total_pages = 4;
+}
+
+enum Filters {
+  FILTER_UNESPECIFIED = 0;
+  FILTER_DRAFT = 1;
+  FILTER_SCHEDULED = 2;
+  FILTER_ARCHIVED = 3;
+  FILTER_ACTIVE = 4;
+}
