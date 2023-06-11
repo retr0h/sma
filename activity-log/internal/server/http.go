@@ -2,62 +2,102 @@ package server
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	api "github.com/retr0h/sma/activity-log"
 )
-
-type IDDocument struct {
-	ID uint64 `json:"id"`
-}
-
-type ActivityDocument struct {
-	Activity Activity `json:"activity"`
-}
 
 type httpServer struct {
 	Activities *Activities
 }
 
-func NewHTTPServer(addr string) *http.Server {
-	server := &httpServer{
-		Activities: &Activities{},
-	}
-	r := mux.NewRouter()
-	r.HandleFunc("/", server.handlePost).Methods("POST")
-	r.HandleFunc("/", server.handleGet).Methods("GET")
-	return &http.Server{
-		Addr:    addr,
-		Handler: r,
-	}
-}
-
-func (s *httpServer) handleGet(w http.ResponseWriter, r *http.Request) {
-	var req IDDocument
+func (s *httpServer) handleInsert(w http.ResponseWriter, r *http.Request) {
+	var req api.ActivityDocument
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	id, err := s.Activities.Insert(req.Activity)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	res := api.IDDocument{ID: id}
+	err = json.NewEncoder(w).Encode(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
 
+func (s *httpServer) handleGetByID(w http.ResponseWriter, r *http.Request) {
+	var req api.IDDocument
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	activity, err := s.Activities.Retrieve(req.ID)
 	if err == ErrIDNotFound {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
-
-	res := ActivityDocument{Activity: activity}
-	json.NewEncoder(w).Encode(res)
-}
-
-func (s *httpServer) handlePost(w http.ResponseWriter, r *http.Request) {
-	var req ActivityDocument
-	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	id := s.Activities.Insert(req.Activity)
-	res := IDDocument{ID: id}
-	json.NewEncoder(w).Encode(res)
+	log.Printf("Returning %v\n", activity)
+	res := api.ActivityDocument{Activity: activity}
+	err = json.NewEncoder(w).Encode(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (s *httpServer) handleList(w http.ResponseWriter, r *http.Request) {
+	log.Printf("handleList")
+	var query api.ActivityQueryDocument
+	var err error
+	if r.Body != http.NoBody {
+		err = json.NewDecoder(r.Body).Decode(&query)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+	}
+	activities, err := s.Activities.List(query.Offset)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	log.Printf("Returning %d items", len(activities))
+	err = json.NewEncoder(w).Encode(activities)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func NewHTTPServer(addr string) *http.Server {
+	var acc *Activities
+	var err error
+	if acc, err = NewActivities(); err != nil {
+		log.Fatal(err)
+	}
+	server := &httpServer{
+		Activities: acc,
+	}
+	r := mux.NewRouter()
+	r.HandleFunc("/", server.handleInsert).Methods("POST")
+	r.HandleFunc("/", server.handleGetByID).Methods("GET")
+	r.HandleFunc("/list", server.handleList).Methods("GET")
+	return &http.Server{
+		Addr:    addr,
+		Handler: r,
+	}
 }

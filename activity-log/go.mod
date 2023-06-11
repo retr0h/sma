@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/gorilla/mux v1.8.0
-	github.com/retr0h/sma v0.0.0-20230610172648-67f57054f8b7
+	github.com/mattn/go-sqlite3 v1.14.17
 	google.golang.org/grpc v1.55.0
 	google.golang.org/protobuf v1.30.0
 )
