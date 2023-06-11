@@ -36,8 +36,10 @@ tasks:
       - go install golang.org/x/vuln/cmd/govulncheck@v0.0.0-20221208180742-f2dca5ff4cc3
       - go install github.com/jstemmer/go-junit-report@v0.9.1
       - go install github.com/segmentio/golines@latest
-      - go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
       - go install github.com/cosmtrek/air@latest
+      - brew install protobuf
+      - brew install grpcurl
+      - go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 
   mod:
     desc: Module maintenance
@@ -116,36 +118,9 @@ tasks:
     desc: Parse PROTO_FILES and generate output based on the options given
     cmds:
       - |
-          #cd activity-log
-          #mkdir -p {{.GO_OUT}} {{.SWAGGER_OUT}} {{.OPENAPI_OUT}}
-
-          # protoc \
-          #   --go_out=. \
-          #   --go_opt=paths=source_relative \
-          #   --proto_path=.
-          #   activity-log/api/v1/*.proto \
-
-          # protoc activity-log/api/v1/*.proto \
-          #   --go_out=. \
-          #   --go_opt=paths=source_relative \
-          #   --go-grpc_out=. \
-          #   --go-grpc_opt=paths=source_relative \
-          #   --proto_path=.
-
-          protoc activity-log/api/v1/*.proto \
+          protoc api/v1/*.proto \
             --go_out=. \
             --go_opt=paths=source_relative \
             --go-grpc_out=. \
             --go-grpc_opt=paths=source_relative \
             --proto_path=.
-
-
-          # protoc \
-          #   --go_out={{.GO_OUT}} \
-          #   --go_opt=paths=source_relative \
-          #   --go-grpc_out={{.GO_OUT}} \
-          #   --go-grpc_opt=paths=source_relative \
-          #   --grpc-gateway_out=logtostderr=true,paths=source_relative,grpc_api_configuration={{.ANNOTATION_FILE}}:{{.GO_OUT}} \
-          #   --swagger_out=grpc_api_configuration={{.ANNOTATION_FILE}}:{{.SWAGGER_OUT}} \
-          #   --openapiv2_out=logtostderr=true:{{.OPENAPI_OUT}} \
-          #   {{.PROTO_FILE}}

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v3.21.9
-// source: activity-log/api/v1/activity.proto
+// source: api/v1/activity.proto
 
 package api_v1
 
@@ -179,5 +179,5 @@ var Activity_Log_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "activity-log/api/v1/activity.proto",
+	Metadata: "api/v1/activity.proto",
 }
